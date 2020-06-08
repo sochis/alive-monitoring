@@ -1,0 +1,36 @@
+version: '3'
+services:
+  prometheus:
+    build: prometheus/.
+    image: prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alert.rules:/etc/prometheus/alert.rules
+    ports:
+      - 9090:9090
+    restart: always
+  grafana:
+    build: grafana/.
+    image: grafana
+    container_name: grafana
+    ports:
+      - 3000:3000
+    restart: always
+  alertmanager:
+    build: alertmanager/.
+    image: alertmanager
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - 9093:9093
+    restart: always
+  elasticsearch_exporter:
+    image: justwatch/elasticsearch_exporter:1.1.0
+    container_name: elasticsearch_exporter
+    command:
+     - '--es.uri=http://elasticsearch:9200'
+    restart: always
+    ports:
+    - 9114:9114
